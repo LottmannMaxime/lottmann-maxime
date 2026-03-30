@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxime Lottmann — Post-production Audiovisuelle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #C9A84C; --gold-dim: #8A6D30; --cream: #F0EBE1;
+    --ink: #0D0C0A; --ink-2: #1A1916; --ink-3: #2A2925;
+    --muted: #6B6760; --border: rgba(201,168,76,0.2); --border-strong: rgba(201,168,76,0.5);
+  }
+  html { scroll-behavior: smooth; }
+  body { background:var(--ink); color:var(--cream); font-family:'Cormorant Garamond',serif; font-size:18px; line-height:1.7; overflow-x:hidden; cursor:none; }
+  .cursor { position:fixed; width:8px; height:8px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .2s,height .2s,background .2s; }
+  .cursor-ring { position:fixed; width:36px; height:36px; border:1px solid var(--gold); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .3s,height .3s,opacity .3s; opacity:.6; }
+  .cursor.hover { width:14px; height:14px; background:var(--cream); }
+  .cursor-ring.hover { width:56px; height:56px; opacity:.3; }
+  body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1; opacity:.4; }
+
+  /* NAV */
+  nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:28px 60px; background:linear-gradient(to bottom,rgba(13,12,10,.95) 0%,transparent 100%); transition:background .3s; }
+  .nav-logo { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:.15em; color:var(--gold); text-decoration:none; }
+  .nav-links { display:flex; gap:40px; list-style:none; }
+  .nav-links a { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.2em; color:var(--muted); text-decoration:none; text-transform:uppercase; transition:color .3s; }
+  .nav-links a:hover { color:var(--gold); }
+
+  /* HERO */
+  .hero { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; position:relative; overflow:hidden; }
+  .hero-left { display:flex; flex-direction:column; justify-content:flex-end; padding:120px 60px 80px; position:relative; z-index:2; }
+
+  /* NOM */
+  .hero-name { font-family:'Bebas Neue',sans-serif; font-size:clamp(72px,8vw,120px); line-height:.92; letter-spacing:.02em; color:var(--cream); margin-bottom:28px; opacity:0; animation:fadeUp .8s .2s forwards; }
+  .hero-name span { color:var(--gold); display:block; }
+
+  /* POSTES sous le nom, même niveau visuel */
+  .hero-roles { display:flex; gap:0; margin-bottom:40px; opacity:0; animation:fadeUp .8s .45s forwards; flex-wrap:wrap; }
+  .hero-role { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:var(--cream); padding:11px 22px; border:1px solid var(--border-strong); background:rgba(201,168,76,.07); transition:background .25s,color .25s; white-space:nowrap; }
+  .hero-role:not(:last-child) { border-right:none; }
+  .hero-role:hover { background:rgba(201,168,76,.15); color:var(--gold); }
+
+  /* SÉPARATEUR fin entre nom et rôles */
+  .hero-divider { width:40px; height:1px; background:var(--gold); margin-bottom:20px; opacity:0; animation:fadeUp .6s .35s forwards; }
+
+  .hero-cta { display:flex; gap:20px; align-items:center; opacity:0; animation:fadeUp .8s .65s forwards; }
+  .btn-primary { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); background:var(--gold); border:none; padding:16px 36px; cursor:none; text-decoration:none; transition:background .3s,transform .2s; display:inline-block; }
+  .btn-primary:hover { background:var(--cream); transform:translateY(-2px); }
+  .btn-ghost { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); background:transparent; border:1px solid var(--border-strong); padding:16px 36px; cursor:none; text-decoration:none; transition:all .3s; display:inline-block; }
+  .btn-ghost:hover { border-color:var(--gold); color:var(--cream); transform:translateY(-2px); }
+
+  /* HERO RIGHT — photo portrait, cadrage amélioré */
+  .hero-right { position:relative; overflow:hidden; background:#0f0e0c; }
+  .hero-right::before { content:''; position:absolute; inset:0; background:linear-gradient(to right,var(--ink) 0%,transparent 20%); z-index:2; }
+  .hero-right::after { content:''; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(201,168,76,.01) 3px,rgba(201,168,76,.01) 4px); z-index:3; pointer-events:none; }
+  .hero-photo { width:100%; height:100%; object-fit:cover; object-position:50% 15%; display:block; filter:brightness(.9) saturate(.75) contrast(1.05); transition:transform 9s ease; }
+  .hero:hover .hero-photo { transform:scale(1.04); }
+  .hero-photo-overlay { position:absolute; inset:0; z-index:1; background:linear-gradient(to bottom,transparent 50%,rgba(13,12,10,.55) 100%); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* TICKER — noms des programmes */
+  .ticker-wrap { overflow:hidden; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:15px 0; background:var(--ink-2); position:relative; z-index:2; }
+  .ticker { display:flex; animation:ticker 55s linear infinite; white-space:nowrap; }
+  .ticker-item { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); padding:0 28px; border-right:1px solid var(--border); }
+  .ticker-item.hl { color:var(--gold); }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  section { position:relative; z-index:2; }
+  .section-header { display:flex; align-items:center; gap:20px; margin-bottom:64px; }
+  .section-number { font-family:'DM Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:.2em; }
+  .section-title { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.05em; color:var(--cream); line-height:1; }
+  .section-line { flex:1; height:1px; background:var(--border); }
+
+  /* ABOUT */
+  .about { padding:120px 60px; }
+  .about-inner { display:grid; grid-template-columns:1fr 1.6fr; gap:80px; align-items:start; }
+  .about-text p { font-size:19px; font-weight:300; line-height:1.85; color:rgba(240,235,225,.78); margin-bottom:24px; }
+  .about-text p em { color:var(--gold); font-style:italic; }
+  .skills-categories { display:flex; flex-direction:column; gap:2px; }
+  .skill-cat { border:1px solid var(--border); overflow:hidden; }
+  .skill-cat-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; background:var(--ink-2); cursor:none; transition:background .2s; }
+  .skill-cat-header:hover { background:var(--ink-3); }
+  .skill-cat-header.open { background:var(--ink-3); border-bottom:1px solid var(--border); }
+  .skill-cat-name { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; color:var(--gold); text-transform:uppercase; }
+  .skill-cat-arrow { font-size:12px; color:var(--gold-dim); transition:transform .3s; }
+  .skill-cat-header.open .skill-cat-arrow { transform:rotate(90deg); }
+  .skill-cat-body { display:none; padding:12px 20px 16px; background:var(--ink); }
+  .skill-cat-body.open { display:block; }
+  .skill-tag-list { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .skill-tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase; padding:5px 12px; border:1px solid var(--border); color:rgba(240,235,225,.55); transition:border-color .2s,color .2s; }
+  .skill-tag:hover { border-color:var(--gold-dim); color:var(--cream); }
+
+  /* PROJECTS */
+  .projects { padding:120px 60px; background:linear-gradient(to bottom,var(--ink) 0%,var(--ink-2) 50%,var(--ink) 100%); }
+  .projects-perso { padding:80px 60px 120px; background:var(--ink); }
+  .project-filters { display:flex; gap:4px; margin-bottom:48px; flex-wrap:wrap; }
+  .filter-btn { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; padding:10px 20px; border:1px solid var(--border); background:transparent; color:var(--muted); cursor:none; transition:all .2s; }
+  .filter-btn:hover,.filter-btn.active { background:var(--gold); color:var(--ink); border-color:var(--gold); }
+  .projects-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+  .projects-grid-perso { display:grid; grid-template-columns:repeat(2,1fr); gap:2px; }
+  .project-card { position:relative; background:var(--ink-3); border:1px solid var(--border); overflow:hidden; cursor:none; transition:transform .4s cubic-bezier(.25,.46,.45,.94),border-color .3s; display:flex; flex-direction:column; }
+  .project-card:hover { transform:translateY(-4px); border-color:var(--border-strong); }
+  .project-card.featured { grid-column:span 2; }
+  .project-card.hidden { display:none; }
+  /* Carte "highlight" — bordure or subtile pour les 3 projets mis en avant */
+  .project-card.highlight { border-color:rgba(201,168,76,.35); }
+  .project-card.highlight .project-type-badge { background:var(--cream); color:var(--ink); }
+  .project-thumb { position:relative; overflow:hidden; aspect-ratio:16/9; background:var(--ink-2); flex-shrink:0; }
+  .project-thumb img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease; filter:brightness(.7) saturate(.7); }
+  .project-card:hover .project-thumb img { transform:scale(1.04); filter:brightness(.88) saturate(.95); }
+  .project-thumb video { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(.7) saturate(.7); transition:filter .3s; }
+  .project-card:hover .project-thumb video { filter:brightness(.88) saturate(.95); }
+  .thumb-nopic { width:100%; height:100%; background:repeating-linear-gradient(-45deg,#111 0,#111 4px,#161512 4px,#161512 20px); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
+  .thumb-nopic-label { font-family:'Bebas Neue',sans-serif; font-size:11px; letter-spacing:.4em; color:var(--gold-dim); opacity:.6; }
+  .thumb-nopic-chain { display:flex; gap:6px; }
+  .thumb-nopic-chain span { display:block; width:20px; height:14px; border:1px solid rgba(201,168,76,.2); background:rgba(201,168,76,.04); }
+  .thumb-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 30%,rgba(13,12,10,.85) 100%); display:flex; align-items:center; justify-content:center; transition:background .3s; }
+  .project-card:hover .thumb-overlay { background:linear-gradient(to bottom,rgba(0,0,0,.3) 0%,rgba(13,12,10,.85) 100%); }
+  .play-circle { width:56px; height:56px; border:1.5px solid rgba(201,168,76,.7); border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(13,12,10,.5); backdrop-filter:blur(6px); opacity:0; transform:scale(.85); transition:opacity .3s,transform .3s,background .3s,border-color .3s; cursor:none; }
+  .project-card:hover .play-circle { opacity:1; transform:scale(1); }
+  .play-circle:hover { background:var(--gold); border-color:var(--gold); }
+  .play-circle svg { width:16px; fill:var(--gold); margin-left:3px; transition:fill .3s; }
+  .play-circle:hover svg { fill:var(--ink); }
+  .ext-circle { width:56px; height:56px; border:1.5px solid rgba(201,168,76,.7); border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(13,12,10,.5); backdrop-filter:blur(6px); opacity:0; transform:scale(.85); transition:opacity .3s,transform .3s,background .3s; cursor:none; text-decoration:none; font-size:20px; color:var(--gold); }
+  .project-card:hover .ext-circle { opacity:1; transform:scale(1); }
+  .ext-circle:hover { background:var(--gold); color:var(--ink); }
+  .project-type-badge { position:absolute; top:14px; left:14px; z-index:2; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; padding:5px 10px; background:var(--gold); color:var(--ink); }
+  .project-body { padding:24px; flex:1; display:flex; flex-direction:column; }
+  .project-meta { font-family:'DM Mono',monospace; font-size:10px; color:var(--gold-dim); letter-spacing:.15em; margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .project-title { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:.05em; color:var(--cream); margin-bottom:8px; line-height:1.1; }
+  .project-desc { font-size:14px; color:var(--muted); font-style:italic; line-height:1.6; margin-bottom:14px; flex:1; }
+  .project-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .tag { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.15em; text-transform:uppercase; padding:4px 10px; border:1px solid var(--border); color:var(--muted); }
+  .project-card:hover .tag { border-color:var(--border-strong); }
+  .project-watch-btn { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--border); font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--muted); background:transparent; border-left:none; border-right:none; border-bottom:none; cursor:none; width:100%; text-align:left; transition:color .2s,background .2s; text-decoration:none; }
+  .project-watch-btn:hover { color:var(--gold); background:rgba(201,168,76,.05); }
+  .project-watch-btn .arrow { font-size:16px; transition:transform .3s; margin-left:auto; }
+  .project-card:hover .project-watch-btn .arrow { transform:translateX(4px); }
+
+  /* MODAL */
+  .modal-overlay { position:fixed; inset:0; z-index:1000; background:rgba(13,12,10,.97); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .35s ease; backdrop-filter:blur(8px); }
+  .modal-overlay.open { opacity:1; pointer-events:all; }
+  .modal-inner { width:90vw; max-width:1100px; position:relative; transform:scale(.94) translateY(20px); transition:transform .35s cubic-bezier(.25,.46,.45,.94); }
+  .modal-overlay.open .modal-inner { transform:scale(1) translateY(0); }
+  .modal-video { width:100%; aspect-ratio:16/9; border:1px solid var(--border-strong); background:#000; position:relative; overflow:hidden; }
+  .modal-video iframe, .modal-video video { width:100%; height:100%; border:none; display:block; }
+  .modal-meta { padding:20px 0 0; display:flex; justify-content:space-between; align-items:flex-start; gap:24px; }
+  .modal-title { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:.05em; line-height:1; }
+  .modal-subtitle { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; color:var(--gold-dim); margin-top:6px; }
+  .modal-close { background:transparent; border:1px solid var(--border-strong); color:var(--cream); cursor:none; width:44px; height:44px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; transition:background .2s,border-color .2s; }
+  .modal-close:hover { background:var(--gold); border-color:var(--gold); color:var(--ink); }
+  .modal-esc-hint { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; color:var(--muted); text-transform:uppercase; margin-top:8px; text-align:right; }
+
+  /* CONTACT */
+  .contact { padding:120px 60px; background:var(--ink-2); border-top:1px solid var(--border); }
+  .contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+  .contact-text h3 { font-family:'Bebas Neue',sans-serif; font-size:52px; letter-spacing:.05em; color:var(--cream); line-height:1; margin-bottom:24px; }
+  .contact-text h3 em { color:var(--gold); font-style:italic; font-family:'Cormorant Garamond',serif; font-size:48px; }
+  .contact-text p { font-size:18px; font-weight:300; color:var(--muted); margin-bottom:40px; line-height:1.8; }
+  .contact-links { display:flex; flex-direction:column; gap:2px; }
+  .contact-link { display:flex; align-items:center; justify-content:space-between; padding:22px 28px; border:1px solid var(--border); text-decoration:none; background:var(--ink); transition:all .3s; }
+  .contact-link:hover { background:var(--ink-3); border-color:var(--border-strong); transform:translateX(4px); }
+  .contact-link-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; color:var(--gold-dim); text-transform:uppercase; margin-bottom:4px; }
+  .contact-link-value { font-size:17px; color:var(--cream); }
+
+  /* CONTACT RIGHT — épuré, sans vide */
+  .contact-right { display:flex; flex-direction:column; gap:2px; }
+  .contact-avail { border:1px solid var(--border); padding:28px 32px; background:var(--ink); }
+  .contact-avail-dot { width:9px; height:9px; border-radius:50%; background:#4ade80; display:inline-block; margin-right:10px; flex-shrink:0; animation:pulse-green 2.2s infinite; }
+  @keyframes pulse-green { 0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.4)} 55%{box-shadow:0 0 0 7px rgba(74,222,128,0)} }
+  .contact-avail-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--cream); margin-bottom:14px; display:flex; align-items:center; }
+  .contact-avail-text { font-size:15px; color:var(--muted); font-style:italic; line-height:1.75; }
+  .contact-avail-text em { color:rgba(240,235,225,.75); font-style:normal; }
+  /* Specs : 2 items, pleine largeur, sans grille */
+  .contact-spec-row { display:flex; flex-direction:column; gap:2px; }
+  .contact-spec { padding:18px 24px; background:var(--ink); border:1px solid var(--border); display:flex; justify-content:space-between; align-items:baseline; gap:16px; }
+  .contact-spec-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--gold-dim); white-space:nowrap; }
+  .contact-spec-value { font-size:14px; color:var(--cream); font-style:italic; text-align:right; }
+
+  /* FOOTER */
+  footer { padding:40px 60px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); position:relative; z-index:2; }
+  .footer-copy { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--muted); text-transform:uppercase; }
+  .footer-social { display:flex; gap:24px; }
+  .footer-social a { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.15em; color:var(--muted); text-decoration:none; text-transform:uppercase; transition:color .2s; }
+  .footer-social a:hover { color:var(--gold); }
+
+  .scroll-reveal { opacity:0; transform:translateY(20px); transition:opacity .7s ease,transform .7s ease; }
+  .scroll-reveal.visible { opacity:1; transform:translateY(0); }
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:var(--ink); }
+  ::-webkit-scrollbar-thumb { background:var(--gold-dim); }
+
+  @media(max-width:900px) {
+    nav { padding:20px 24px; } .nav-links { display:none; }
+    .hero { grid-template-columns:1fr; } .hero-right { min-height:55vh; } .hero-left { padding:100px 24px 60px; }
+    .hero-roles { flex-direction:column; }
+    .hero-role:not(:last-child) { border-right:1px solid var(--border-strong); border-bottom:none; }
+    .about-inner { grid-template-columns:1fr; gap:40px; }
+    .about,.projects,.projects-perso,.contact { padding-left:24px!important; padding-right:24px!important; }
+    .projects-grid,.projects-grid-perso { grid-template-columns:1fr; }
+    .project-card.featured { grid-column:span 1; }
+    .contact-grid { grid-template-columns:1fr; gap:32px; }
+    footer { padding:28px 24px; flex-direction:column; gap:16px; text-align:center; }
+    .modal-inner { width:95vw; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- MODAL VIDÉO -->
+<div class="modal-overlay" id="videoModal" onclick="closeModalOnBg(event)">
+  <div class="modal-inner">
+    <div class="modal-video" id="modalVideoBox"></div>
+    <div class="modal-meta">
+      <div>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-subtitle" id="modalSubtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-esc-hint">Appuyez sur Échap pour fermer</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">Lottmann Maxime</a>
+  <ul class="nav-links">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#projects">Projets professionnels</a></li>
+    <li><a href="#perso">Projets personnels</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <h1 class="hero-name">MAXIME<span>LOTTMANN</span></h1>
+    <div class="hero-divider"></div>
+    <!-- 3 postes, même poids visuel, directement sous le nom -->
+    <div class="hero-roles">
+      <span class="hero-role">Monteur</span>
+      <span class="hero-role">Assistant monteur</span>
+      <span class="hero-role">Technicien post-production</span>
+    </div>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">Mes projets</a>
+      <a href="#contact" class="btn-ghost">Me contacter</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-photo-overlay"></div>
+    <!-- Nouvelle photo — format différent, object-position ajusté pour centrer le visage -->
+    <img class="hero-photo"
+         src="https://github.com/LottmannMaxime/lottmann-maxime/blob/main/73325DC8-D4B9-4BDD-9BC5-C22B0DE7E66F_1_105_c.jpeg?raw=true"
+         alt="Maxime Lottmann"
+         onerror="this.style.display='none'">
+  </div>
+</section>
+
+<!-- TICKER — tous les programmes professionnels et personnels -->
+<div class="ticker-wrap">
+  <div class="ticker" id="mainTicker">
+    <!-- Pro -->
+    <span class="ticker-item hl">Icon(s) Bvlgari</span>
+    <span class="ticker-item hl">Inside the Dream</span>
+    <span class="ticker-item hl">The Fire Within</span>
+    <span class="ticker-item">La Boîte à question</span>
+    <span class="ticker-item">Broute.</span>
+    <span class="ticker-item">Hot Ones</span>
+    <span class="ticker-item">Footcheball</span>
+    <span class="ticker-item">Césars 2023</span>
+    <span class="ticker-item">Sur place ou à emporter</span>
+    <span class="ticker-item">J'irai dormir chez vous</span>
+    <span class="ticker-item">Nus &amp; Culottés</span>
+    <span class="ticker-item">Éphéméride</span>
+    <span class="ticker-item">Envie d'agir</span>
+    <span class="ticker-item">Le Mag qui fait du bien</span>
+    <span class="ticker-item">Jobs</span>
+    <span class="ticker-item">Chez Jordan</span>
+    <span class="ticker-item">Mostra de Venise 2022</span>
+    <span class="ticker-item">Mostra de Venise 2023</span>
+    <span class="ticker-item">Magistral.e</span>
+    <span class="ticker-item">Canalissime</span>
+    <span class="ticker-item">Oscars 2023</span>
+    <span class="ticker-item">L'Histoire secrète des paysages</span>
+    <span class="ticker-item">Tout le monde chante contre le cancer</span>
+    <!-- Perso -->
+    <span class="ticker-item">Les Cuistots de Norbert</span>
+    <span class="ticker-item">Das Land von Mark</span>
+    <span class="ticker-item">Portrait d'une musicienne</span>
+    <span class="ticker-item">Ça on va couper…</span>
+    <!-- duplicate for loop -->
+    <span class="ticker-item hl">Icon(s) Bvlgari</span>
+    <span class="ticker-item hl">Inside the Dream</span>
+    <span class="ticker-item hl">The Fire Within</span>
+    <span class="ticker-item">La Boîte à question</span>
+    <span class="ticker-item">Broute.</span>
+    <span class="ticker-item">Hot Ones</span>
+    <span class="ticker-item">Footcheball</span>
+    <span class="ticker-item">Césars 2023</span>
+    <span class="ticker-item">Sur place ou à emporter</span>
+    <span class="ticker-item">J'irai dormir chez vous</span>
+    <span class="ticker-item">Nus &amp; Culottés</span>
+    <span class="ticker-item">Éphéméride</span>
+    <span class="ticker-item">Envie d'agir</span>
+    <span class="ticker-item">Le Mag qui fait du bien</span>
+    <span class="ticker-item">Jobs</span>
+    <span class="ticker-item">Chez Jordan</span>
+    <span class="ticker-item">Mostra de Venise 2022</span>
+    <span class="ticker-item">Mostra de Venise 2023</span>
+    <span class="ticker-item">Magistral.e</span>
+    <span class="ticker-item">Canalissime</span>
+    <span class="ticker-item">Oscars 2023</span>
+    <span class="ticker-item">L'Histoire secrète des paysages</span>
+    <span class="ticker-item">Tout le monde chante contre le cancer</span>
+    <span class="ticker-item">Les Cuistots de Norbert</span>
+    <span class="ticker-item">Das Land von Mark</span>
+    <span class="ticker-item">Portrait d'une musicienne</span>
+    <span class="ticker-item">Ça on va couper…</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="section-header scroll-reveal">
+    <span class="section-number">01</span>
+    <h2 class="section-title">À PROPOS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-inner">
+    <div class="scroll-reveal">
+      <div class="about-text">
+        <p>Autonome, impliqué et rigoureux, j'apporte efficacité, dynamisme et sens du détail à chaque projet. J'aime faire avancer les productions, optimiser les workflows et garantir des livrables de qualité, même dans des environnements exigeants.</p>
+        <p>J'ai collaboré sur des émissions de flux, documentaires et fictions pour <em>Canal+, France TV, Arte, C8, M6</em> et <em>Prime Video</em>.</p>
+      </div>
+    </div>
+    <div class="skills-categories scroll-reveal">
+      <div class="skill-cat">
+        <div class="skill-cat-header" onclick="toggleSkillCat(this)">
+          <span class="skill-cat-name">Post-production & Montage</span>
+          <span class="skill-cat-arrow">›</span>
+        </div>
+        <div class="skill-cat-body">
+          <div class="skill-tag-list">
+            <span class="skill-tag">Avid Media Composer</span><span class="skill-tag">Adobe Premiere Pro</span><span class="skill-tag">DaVinci Resolve</span><span class="skill-tag">After Effects</span><span class="skill-tag">Final Cut Pro</span><span class="skill-tag">Dérushage</span><span class="skill-tag">Montage</span><span class="skill-tag">Habillage</span><span class="skill-tag">Exports & PAD</span>
+          </div>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-header" onclick="toggleSkillCat(this)">
+          <span class="skill-cat-name">Suite Adobe & Création</span>
+          <span class="skill-cat-arrow">›</span>
+        </div>
+        <div class="skill-cat-body">
+          <div class="skill-tag-list">
+            <span class="skill-tag">Photoshop</span><span class="skill-tag">Illustrator</span><span class="skill-tag">InDesign</span><span class="skill-tag">Visuels réseaux sociaux</span><span class="skill-tag">Supports de com</span><span class="skill-tag">Habillages graphiques</span>
+          </div>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-header" onclick="toggleSkillCat(this)">
+          <span class="skill-cat-name">Tech & Workflows</span>
+          <span class="skill-cat-arrow">›</span>
+        </div>
+        <div class="skill-cat-body">
+          <div class="skill-tag-list">
+            <span class="skill-tag">Gestion workflows post-prod</span><span class="skill-tag">Encodage & codecs</span><span class="skill-tag">Exports multi-supports</span><span class="skill-tag">Gestion médias & archivage</span><span class="skill-tag">Mac & Windows</span><span class="skill-tag">Pipelines de production</span>
+          </div>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-header" onclick="toggleSkillCat(this)">
+          <span class="skill-cat-name">Production & Coordination</span>
+          <span class="skill-cat-arrow">›</span>
+        </div>
+        <div class="skill-cat-body">
+          <div class="skill-tag-list">
+            <span class="skill-tag">Suivi de post-production</span><span class="skill-tag">Coordination technique</span><span class="skill-tag">Gestion de planning</span><span class="skill-tag">Relation prestataires</span><span class="skill-tag">Organisation audiovisuelle</span>
+          </div>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-header" onclick="toggleSkillCat(this)">
+          <span class="skill-cat-name">IA & Nouveaux outils</span>
+          <span class="skill-cat-arrow">›</span>
+        </div>
+        <div class="skill-cat-body">
+          <div class="skill-tag-list">
+            <span class="skill-tag">IA générative image/vidéo</span><span class="skill-tag">Motion IA</span><span class="skill-tag">Optimisation workflows IA</span><span class="skill-tag">Veille créative</span>
+          </div>
+        </div>
+      </div>
+      <div class="skill-cat">
+        <div class="skill-cat-header" onclick="toggleSkillCat(this)">
+          <span class="skill-cat-name">Audiovisuel & Contenu</span>
+          <span class="skill-cat-arrow">›</span>
+        </div>
+        <div class="skill-cat-body">
+          <div class="skill-tag-list">
+            <span class="skill-tag">Narration & rythme</span><span class="skill-tag">Multi-plateformes</span><span class="skill-tag">Sensibilité éditoriale</span><span class="skill-tag">Formats courts & réseaux sociaux</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETS PROFESSIONNELS — priorité : Icon(s) Bvlgari, Inside the Dream, The Fire Within en tête -->
+<section class="projects" id="projects">
+  <div class="section-header scroll-reveal">
+    <span class="section-number">02</span>
+    <h2 class="section-title">PROJETS PROFESSIONNELS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="project-filters scroll-reveal">
+    <button class="filter-btn active" onclick="filterProjects('all',this)">Tous</button>
+    <button class="filter-btn" onclick="filterProjects('tv',this)">Émission TV</button>
+    <button class="filter-btn" onclick="filterProjects('doc',this)">Documentaire</button>
+    <button class="filter-btn" onclick="filterProjects('serie',this)">Série</button>
+    <button class="filter-btn" onclick="filterProjects('ceremonie',this)">Cérémonie</button>
+  </div>
+
+  <div class="projects-grid" id="projectsGrid">
+
+    <!-- ★ PRIORITÉ 1 — ICON(S) BVLGARI — featured + highlight -->
+    <div class="project-card featured highlight scroll-reveal" data-cat="doc">
+      <div class="project-thumb">
+        <img src="https://media.ouest-france.fr/v1/pictures/4b78a46ee6b6eef33a6f55f44f08cbdb-icon-s-bvlgari-by-refik-anadol-documentaire-beaux-arts-programme-tv?width=1260&height=708&sign=2e4ec4fb3f74985422f8c60de2800efe3ad3a8200308dad5d0ce6abc73079e8f&client_id=bpservices" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Prime Video</div></div>'" alt="Icon(s) Bvlgari by Refik Anadol">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('mp4:https://github.com/LottmannMaxime/lottmann-maxime/raw/main/TEASERBVL916.mov','Icon(s) : Bvlgari by Refik Anadol','Documentaire · Prime Video · 2025')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Documentaire</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Prime Video</span><span>2025</span></div>
+        <div class="project-title">Icon(s) : Bvlgari by Refik Anadol</div>
+        <p class="project-desc">Refik Anadol, l'artiste d'intelligence artificielle le plus célèbre au monde, relève un défi : créer une œuvre numérique et physique inspirée du symbole Serpenti de Bulgari. De Los Angeles jusqu'aux ateliers de haute joaillerie à Rome, le film suit chaque étape vers la révélation finale à Shanghai.</p>
+        <div class="project-tags"><span class="tag">Prime Video</span><span class="tag">IA & Art</span><span class="tag">Luxe</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('mp4:https://github.com/LottmannMaxime/lottmann-maxime/raw/main/TEASERBVL916.mov','Icon(s) : Bvlgari by Refik Anadol','Documentaire · Prime Video · 2025')">Visionner le teaser <span class="arrow">→</span></button>
+    </div>
+
+    <!-- ★ PRIORITÉ 2 — INSIDE THE DREAM AIR FRANCE — highlight -->
+    <div class="project-card highlight scroll-reveal" data-cat="doc">
+      <div class="project-thumb">
+        <img src="https://thumb.canalplus.pro/http/unsafe/%7BresolutionXY%7D/filters:quality(%7BimageQualityPercentage%7D)/canalplus-cdn.canal-plus.io/p1/unit/29754798/canal-ouah_50001/STD/AFV34x3-SXKe" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Inside the Dream Air France">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('mp4:https://www.terminal9studios.com/wp-content/uploads/2025/08/AIRFRANCE-TEASER.mp4','Inside the Dream : La Première Air France','Documentaire · Canal+ · 2025')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Documentaire</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span><span>2025</span></div>
+        <div class="project-title">Inside the Dream : La Première Air France</div>
+        <p class="project-desc">Plongée dans l'expérience de vol la plus exclusive au monde. Air France travaille dans le plus grand secret sur son nouveau service La Première — élégance et raffinement à la française, chaque détail pour offrir la plus haute expression du voyage.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Luxe</span><span class="tag">Documentaire</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('mp4:https://www.terminal9studios.com/wp-content/uploads/2025/08/AIRFRANCE-TEASER.mp4','Inside the Dream : La Première Air France','Documentaire · Canal+ · 2025')">Visionner le teaser <span class="arrow">→</span></button>
+    </div>
+
+    <!-- ★ PRIORITÉ 3 — THE FIRE WITHIN — highlight -->
+    <div class="project-card highlight scroll-reveal" data-cat="doc">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/__1WQTyvbek/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/__1WQTyvbek/hqdefault.jpg'" alt="The Fire Within">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:__1WQTyvbek','The Fire Within : Requiem pour Katja et Maurice Krafft','Film documentaire · Werner Herzog · Arte · 2022')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Documentaire</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Werner Herzog · Arte</span><span>2022</span></div>
+        <div class="project-title">The Fire Within : Requiem pour Katja et Maurice Krafft</div>
+        <p class="project-desc">En s'emparant des archives cinématographiques des illustres volcanologues Katia et Maurice Krafft, Werner Herzog célèbre avec force et poésie la vie de deux chercheurs à l'œuvre unique. Trente ans après leur disparition, leurs images époustouflantes reprennent vie.</p>
+        <div class="project-tags"><span class="tag">Arte</span><span class="tag">Werner Herzog</span><span class="tag">Documentaire</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:__1WQTyvbek','The Fire Within : Requiem pour Katja et Maurice Krafft','Film documentaire · Werner Herzog · Arte · 2022')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- LA BOÎTE À QUESTION — featured -->
+    <div class="project-card featured scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/LJqvq2bosGc/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/LJqvq2bosGc/hqdefault.jpg'" alt="La Boîte à question">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:LJqvq2bosGc','La Boîte à question','Émission TV · Canal+')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span></div>
+        <div class="project-title">La Boîte à question</div>
+        <p class="project-desc">Installée dans une petite pièce blanche, avec un écran comme unique vis-à-vis, une célébrité répond aux questions qui lui sont posées en off.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Talk</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:LJqvq2bosGc','La Boîte à question','Émission TV · Canal+')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- BROUTE -->
+    <div class="project-card scroll-reveal" data-cat="serie">
+      <div class="project-thumb">
+        <img src="https://thumb.canalplus.pro/http/unsafe/%7BresolutionXY%7D/filters:quality(%7BimageQualityPercentage%7D)/img-hapi.canalplus.pro:80/ServiceImage/ImageID/102014750" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Broute">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:xBoQTCdHYeA','Broute.','Série · Canal+')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Série</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span></div>
+        <div class="project-title">Broute.</div>
+        <p class="project-desc">Non pas sans acidité, Broute parodie l'actualité. Bertrand Usclat et les comédiens du collectif Yes Vous Aime détournent avec un malin plaisir les clichés de notre époque.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Comédie</span><span class="tag">Satire</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:xBoQTCdHYeA','Broute.','Série · Canal+')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- FOOTCHEBALL -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/TUmv0X1bufs/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/TUmv0X1bufs/hqdefault.jpg'" alt="Footcheball">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:TUmv0X1bufs','Footcheball','Émission TV · Canal+ Kids')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+ Kids</span></div>
+        <div class="project-title">Footcheball</div>
+        <p class="project-desc">Chaque semaine, Tony Vernagallo en apprend plus sur le ballon aux jeunes téléspectateurs — actualités, histoires et anecdotes avec une bonne touche d'humour.</p>
+        <div class="project-tags"><span class="tag">Canal+ Kids</span><span class="tag">Sport</span><span class="tag">Jeunesse</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:TUmv0X1bufs','Footcheball','Émission TV · Canal+ Kids')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- HOT ONES — featured -->
+    <div class="project-card featured scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/iMrKHNKCC1M/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/iMrKHNKCC1M/hqdefault.jpg'" alt="Hot Ones">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:iMrKHNKCC1M','Hot Ones','Émission TV · Canal+ / YouTube')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+ · YouTube</span></div>
+        <div class="project-title">Hot Ones</div>
+        <p class="project-desc">Une interview au principe simple et pourtant compliqué : 10 grandes questions, 10 sauces épicées. À chaque question sa sauce. Plus l'interview progresse, plus l'intensité augmente — et plus la conversation prend une tournure imprévisible.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">YouTube</span><span class="tag">Interview</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:iMrKHNKCC1M','Hot Ones','Émission TV · Canal+ / YouTube')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- CÉSARS 2023 -->
+    <div class="project-card scroll-reveal" data-cat="ceremonie">
+      <div class="project-thumb">
+        <img src="https://www.cinemage.fr/wp-content/uploads/2023/01/cesar-2023-affiche.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Césars 2023">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:vsjEB8eqqI8','Césars 2023','Cérémonie · Canal+ · 2023')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Cérémonie</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span><span>2023</span></div>
+        <div class="project-title">Césars 2023</div>
+        <p class="project-desc">Captation et post-production de la cérémonie des Césars du cinéma français diffusée sur Canal+.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Cérémonie</span><span class="tag">Direct</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:vsjEB8eqqI8','Césars 2023','Cérémonie · Canal+ · 2023')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- SUR PLACE OU À EMPORTER -->
+    <div class="project-card scroll-reveal" data-cat="serie">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/xK1LKF2RjRA/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/xK1LKF2RjRA/hqdefault.jpg'" alt="Sur place ou à emporter">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:xK1LKF2RjRA','Sur place ou à emporter','Série TV · Comédie+ · 2023')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Série TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Comédie+</span><span>2023</span></div>
+        <div class="project-title">Sur place ou à emporter</div>
+        <p class="project-desc">Décidés à réussir, Boriss et Samy ouvrent un kebab dans leur ville. Malgré une débordante envie de bien faire, leur établissement n'a pas le succès escompté.</p>
+        <div class="project-tags"><span class="tag">Comédie+</span><span class="tag">Série</span><span class="tag">Fiction</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:xK1LKF2RjRA','Sur place ou à emporter','Série TV · Comédie+ · 2023')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- J'IRAI DORMIR CHEZ VOUS -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/mLHWDXJ4dCI/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/mLHWDXJ4dCI/hqdefault.jpg'" alt="J'irai dormir chez vous">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:mLHWDXJ4dCI','J\'irai dormir chez vous','Émission TV · RMC Story')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>RMC Story</span></div>
+        <div class="project-title">J'irai dormir chez vous</div>
+        <p class="project-desc">Une chemise rouge, un sac à dos, trois caméras. Antoine de Maximy partage ses rencontres authentiques et ses aventures uniques de globe-trotter.</p>
+        <div class="project-tags"><span class="tag">RMC Story</span><span class="tag">Voyage</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:mLHWDXJ4dCI','J\'irai dormir chez vous','Émission TV · RMC Story')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- NUS & CULOTTÉS -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://media.senscritique.com/media/000010147005/0/nus_et_culottes.jpg" onerror="this.src='https://img.youtube.com/vi/2_yu7z2z4_E/hqdefault.jpg'" alt="Nus & Culottés">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:2_yu7z2z4_E','Nus & Culottés','Émission TV · France TV')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>France TV</span></div>
+        <div class="project-title">Nus & Culottés</div>
+        <p class="project-desc">Nans et Mouts voyagent en partant de zéro en pleine nature, sans vêtement et sans argent. Munis de deux caméras paluches, ils filment spontanément leurs aventures.</p>
+        <div class="project-tags"><span class="tag">France TV</span><span class="tag">Aventure</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:2_yu7z2z4_E','Nus & Culottés','Émission TV · France TV')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- ÉPHÉMÉRIDE -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://thumb.canalplus.pro/http/unsafe/%7BresolutionXY%7D/filters:quality(%7BimageQualityPercentage%7D)/img-hapi.canalplus.pro:80/ServiceImage/ImageID/108002506" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>C8</div></div>'" alt="Éphéméride">
+        <div class="thumb-overlay"></div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>C8</span></div>
+        <div class="project-title">Éphéméride</div>
+        <p class="project-desc">Une courte présentation de l'histoire du saint du jour qui se conclut par un dicton.</p>
+        <div class="project-tags"><span class="tag">C8</span><span class="tag">Magazine</span></div>
+      </div>
+    </div>
+
+    <!-- ENVIE D'AGIR -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://www.coulisses-tv.fr/media/k2/items/cache/c685944731e4101382f150f122c5f0b6_XL.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>C8</div></div>'" alt="Envie d'agir">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('dm:x8iuekr','Envie d\'agir','Émission TV · C8')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>C8</span></div>
+        <div class="project-title">Envie d'agir</div>
+        <p class="project-desc">Des citoyens qui s'engagent pour un monde meilleur — pour la planète, pour l'égalité des chances ou contre les discriminations.</p>
+        <div class="project-tags"><span class="tag">C8</span><span class="tag">Société</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('dm:x8iuekr','Envie d\'agir','Émission TV · C8')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- LE MAG QUI FAIT DU BIEN -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://resize.programme-television.org/landscape/images/imported/programs/160184254/169aefa492e7451db20154646375d903" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>C8</div></div>'" alt="Le Mag qui fait du bien">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:8EHRtQTkmQQ','Le Mag qui fait du bien','Émission TV · C8')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>C8</span></div>
+        <div class="project-title">Le Mag qui fait du bien</div>
+        <p class="project-desc">Ce magazine apporte joie, bonnes ondes et encouragements. Les invités explorent les voies d'une plus belle santé par des exercices simples et pratiques en plateau.</p>
+        <div class="project-tags"><span class="tag">C8</span><span class="tag">Bien-être</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:8EHRtQTkmQQ','Le Mag qui fait du bien','Émission TV · C8')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- JOBS -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://www.iseg.fr/wp-content/uploads/2022/11/c8-ISEG-e%CC%81mission-JOB-1024x640.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>C8</div></div>'" alt="Jobs">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('dm:x8z6hhi','Jobs','Émission TV · C8')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>C8</span></div>
+        <div class="project-title">Jobs</div>
+        <p class="project-desc">L'expert de l'emploi Albert Batihe reçoit chefs d'entreprises et personnalités pour faire le tour d'horizon des secteurs d'activité et du monde du travail.</p>
+        <div class="project-tags"><span class="tag">C8</span><span class="tag">Emploi</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('dm:x8z6hhi','Jobs','Émission TV · C8')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- CHEZ JORDAN -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/TtQPRKwaMSQ/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/TtQPRKwaMSQ/hqdefault.jpg'" alt="Chez Jordan">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:TtQPRKwaMSQ','Chez Jordan','Émission TV · C8')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>C8</span></div>
+        <div class="project-title">Chez Jordan</div>
+        <p class="project-desc">Un moment conjuguant confessions et indiscrétions en toute convivialité. Jordan incite ses invités du spectacle et des médias à se livrer.</p>
+        <div class="project-tags"><span class="tag">C8</span><span class="tag">Talk-show</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:TtQPRKwaMSQ','Chez Jordan','Émission TV · C8')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- MOSTRA DE VENISE 2022 -->
+    <div class="project-card scroll-reveal" data-cat="ceremonie">
+      <div class="project-thumb">
+        <img src="https://www.avoir-alire.com/IMG/jpg/1658822364852_1000x0702_0x0x0x0_1658822379040.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Mostra de Venise 2022">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('dm:x8dg54w','Mostra de Venise 2022','Cérémonie d\'ouverture · Canal+')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Cérémonie</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span><span>2022</span></div>
+        <div class="project-title">Mostra de Venise 2022</div>
+        <p class="project-desc">Cérémonie d'ouverture du Festival international du film de Venise, diffusée en direct sur Canal+.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Festival</span><span class="tag">Direct</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('dm:x8dg54w','Mostra de Venise 2022','Cérémonie d\'ouverture · Canal+')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- MOSTRA DE VENISE 2023 -->
+    <div class="project-card scroll-reveal" data-cat="ceremonie">
+      <div class="project-thumb">
+        <img src="https://www.cinemage.fr/wp-content/uploads/2023/08/poster-intero.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Mostra de Venise 2023">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('dm:x8nl1xc','Mostra de Venise 2023','Cérémonie d\'ouverture · Canal+')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Cérémonie</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span><span>2023</span></div>
+        <div class="project-title">Mostra de Venise 2023</div>
+        <p class="project-desc">Cérémonie d'ouverture du Festival international du film de Venise, diffusée en direct sur Canal+.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Festival</span><span class="tag">Direct</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('dm:x8nl1xc','Mostra de Venise 2023','Cérémonie d\'ouverture · Canal+')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- MAGISTRAL.E -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://thumb.canalplus.pro/http/unsafe/%7BresolutionXY%7D/filters:quality(%7BimageQualityPercentage%7D)/canalplus-cdn.canal-plus.io/p1/unit/25389367/canal-ouah/STD/myCANAL_4x3_MEA_1440x108026-yDSW" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Magistral.e">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('dm:x86rgw8','Magistral.e','Émission TV · Canal+')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span></div>
+        <div class="project-title">Magistral.e</div>
+        <p class="project-desc">La collection de masterclasses de Canal+ qui donne la parole à des créateurs. Chaque invité.e construit son propre cours dévoilant les étapes de son processus de création.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Masterclass</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('dm:x86rgw8','Magistral.e','Émission TV · Canal+')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- CANALISSIME -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://thumb.canalplus.pro/http/unsafe/1440x810/filters:quality(80)/img-hapi.canalplus.pro:80/ServiceImage/ImageID/108768883" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Canalissime">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:-evubVHo38A','Canalissime','Émission TV · Canal+')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span></div>
+        <div class="project-title">Canalissime</div>
+        <p class="project-desc">Chaque mois, ce tout-en-images fait le tour d'horizon de l'actualité des programmes de la chaîne au fil d'interviews sur les temps forts de l'antenne.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Magazine</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:-evubVHo38A','Canalissime','Émission TV · Canal+')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- OSCARS 2023 -->
+    <div class="project-card scroll-reveal" data-cat="ceremonie">
+      <div class="project-thumb">
+        <img src="https://m.media-amazon.com/images/M/MV5BZjM4NDAyZDMtYjA4ZC00MmZhLTllNzktZDZlMWFmYzBiYTEzXkEyXkFqcGc@._V1_.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>Canal+</div></div>'" alt="Oscars 2023">
+        <div class="thumb-overlay"></div>
+        <span class="project-type-badge">Cérémonie</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Canal+</span><span>2023</span></div>
+        <div class="project-title">Oscars 2023</div>
+        <p class="project-desc">Captation et post-production de la cérémonie des Oscars diffusée en direct sur Canal+.</p>
+        <div class="project-tags"><span class="tag">Canal+</span><span class="tag">Cérémonie</span><span class="tag">Direct</span></div>
+      </div>
+    </div>
+
+    <!-- L'HISTOIRE SECRÈTE DES PAYSAGES -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://osuny-1b4da.kxcdn.com/1r3vau681et1gslamf94ip5oy915?width=1200&height=0&&fit=inside&quality=80" onerror="this.src='https://img.youtube.com/vi/wII4Qwu7N_E/hqdefault.jpg'" alt="L'Histoire secrète des paysages">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:wII4Qwu7N_E','L\'Histoire secrète des paysages','Émission TV · Planète+')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Planète+</span></div>
+        <div class="project-title">L'Histoire secrète des paysages</div>
+        <p class="project-desc">Les Îles d'Aran offrent un paysage unique façonné par des falaises abruptes. Comment la nature a-t-elle sculpté ces formes géométriques ? Guidé par les habitants, le spectateur explore leurs secrets.</p>
+        <div class="project-tags"><span class="tag">Planète+</span><span class="tag">Nature</span><span class="tag">Géologie</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:wII4Qwu7N_E','L\'Histoire secrète des paysages','Émission TV · Planète+')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+    <!-- TOUT LE MONDE CHANTE CONTRE LE CANCER -->
+    <div class="project-card scroll-reveal" data-cat="tv">
+      <div class="project-thumb">
+        <img src="https://actu.m6.fr/wp-content/uploads/2023/12/Tout-le-monde-chante-les-stars-relevent-le-defis.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\'>M6</div></div>'" alt="Tout le monde chante contre le cancer">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('mp4:https://www.terminal9studios.com/wp-content/uploads/2025/01/TLMC2024-16.9.mp4','Tout le monde chante contre le cancer','Émission TV · M6')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Émission TV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>M6</span></div>
+        <div class="project-title">Tout le monde chante contre le cancer</div>
+        <p class="project-desc">Grand gala annuel au bénéfice de l'association engagée depuis 2005 à apporter du réconfort aux familles touchées par la maladie. Diffusé sur les chaînes du groupe M6.</p>
+        <div class="project-tags"><span class="tag">M6</span><span class="tag">Gala</span><span class="tag">Solidarité</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('mp4:https://www.terminal9studios.com/wp-content/uploads/2025/01/TLMC2024-16.9.mp4','Tout le monde chante contre le cancer','Émission TV · M6')">Visionner l'extrait <span class="arrow">→</span></button>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJETS PERSONNELS -->
+<section class="projects-perso" id="perso">
+  <div class="section-header scroll-reveal">
+    <span class="section-number">03</span>
+    <h2 class="section-title">PROJETS PERSONNELS</h2>
+    <div class="section-line"></div>
+  </div>
+  <p class="scroll-reveal" style="font-size:18px; font-weight:300; color:rgba(240,235,225,.65); max-width:640px; margin-bottom:48px; font-style:italic; line-height:1.8;">
+    Sur mon temps libre, j'ai pu m'enrichir de nouvelles connaissances en travaillant sur mes propres projets — de l'écriture à la réalisation, jusqu'au montage et la mise en ligne.
+  </p>
+  <div class="projects-grid-perso">
+
+    <div class="project-card scroll-reveal">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/j3g59Z87Bp8/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/j3g59Z87Bp8/hqdefault.jpg'" alt="Les Cuistots de Norbert">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:j3g59Z87Bp8','Les Cuistots de Norbert','Projet émission M6 · Projet scolaire')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Projet M6</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Projet scolaire · M6</span></div>
+        <div class="project-title">Les Cuistots de Norbert</div>
+        <p class="project-desc">Nouvelle émission culinaire conçue pour M6 : deux duos de candidats s'affrontent dans une bataille culinaire aussi drôle que savoureuse.</p>
+        <div class="project-tags"><span class="tag">Réalisation</span><span class="tag">Culinaire</span><span class="tag">M6</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:j3g59Z87Bp8','Les Cuistots de Norbert','Projet émission M6 · Projet scolaire')">Visionner <span class="arrow">→</span></button>
+    </div>
+
+    <div class="project-card scroll-reveal">
+      <div class="project-thumb">
+        <img src="https://raw.githubusercontent.com/LottmannMaxime/lottmann-maxime/refs/heads/main/3CFCC766-136E-4895-920E-EF79177CAED9_1_105_c.jpeg" onerror="this.src='https://img.youtube.com/vi/OqZoC2fasZo/hqdefault.jpg'" alt="Das Land von Mark">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:OqZoC2fasZo','Das Land von Mark','Projet série Arte · Projet scolaire')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Projet Arte</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Projet scolaire · Arte</span></div>
+        <div class="project-title">Das Land von Mark</div>
+        <p class="project-desc">Série de 30 épisodes pour Arte : Mark crée son propre pays entre la France et l'Allemagne, dirigeant ses sujets avec la plus grande stupidité.</p>
+        <div class="project-tags"><span class="tag">Réalisation</span><span class="tag">Série</span><span class="tag">Arte</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:OqZoC2fasZo','Das Land von Mark','Projet série Arte · Projet scolaire')">Visionner <span class="arrow">→</span></button>
+    </div>
+
+    <div class="project-card scroll-reveal">
+      <div class="project-thumb">
+        <img src="https://img.youtube.com/vi/GraMr0-1ido/maxresdefault.jpg" onerror="this.src='https://img.youtube.com/vi/GraMr0-1ido/hqdefault.jpg'" alt="Portrait d'une musicienne">
+        <div class="thumb-overlay">
+          <div class="play-circle" onclick="openModal('yt:GraMr0-1ido','Portrait d\'une musicienne','Documentaire · Projet personnel')">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <span class="project-type-badge">Documentaire</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Projet personnel</span></div>
+        <div class="project-title">Portrait d'une musicienne</div>
+        <p class="project-desc">Le portrait d'une contrebassiste professionnelle et professeur au Conservatoire, dans une vidéo éducative à destination des apprenants de français.</p>
+        <div class="project-tags"><span class="tag">Documentaire</span><span class="tag">Réalisation</span><span class="tag">Montage</span></div>
+      </div>
+      <button class="project-watch-btn" onclick="openModal('yt:GraMr0-1ido','Portrait d\'une musicienne','Documentaire · Projet personnel')">Visionner <span class="arrow">→</span></button>
+    </div>
+
+    <div class="project-card scroll-reveal">
+      <div class="project-thumb">
+        <img src="https://raw.githubusercontent.com/LottmannMaxime/lottmann-maxime/refs/heads/main/943ba8c7-cbab-4101-b0d5-cd35af9f8982.jpg" onerror="this.parentElement.innerHTML='<div class=\'thumb-nopic\' style=\'background:linear-gradient(135deg,#0a1f12,#143324)\'><div class=\'thumb-nopic-chain\'><span></span><span></span><span></span><span></span><span></span></div><div class=\'thumb-nopic-label\' style=\'color:#1DB954;opacity:1\'>Podcast Spotify</div></div>'" alt="Ça on va couper">
+        <div class="thumb-overlay">
+          <a class="ext-circle" href="https://open.spotify.com/show/1V8478zg9OWDO3P98ytQXG?si=7294750a3b124e43" target="_blank">♪</a>
+        </div>
+        <span class="project-type-badge">Podcast</span>
+      </div>
+      <div class="project-body">
+        <div class="project-meta"><span>Projet personnel</span></div>
+        <div class="project-title">Ça on va couper…</div>
+        <p class="project-desc">Une émission ni très intellectuelle, ni très référencée : l'interview d'un invité et des trois films qui ont marqué sa vie.</p>
+        <div class="project-tags"><span class="tag">Podcast</span><span class="tag">Cinéma</span><span class="tag">Spotify</span></div>
+      </div>
+      <a class="project-watch-btn" href="https://open.spotify.com/show/1V8478zg9OWDO3P98ytQXG?si=7294750a3b124e43" target="_blank">Écouter sur Spotify <span class="arrow">→</span></a>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT — épuré, sans mobilité, sans réponse, sans citation -->
+<section class="contact" id="contact">
+  <div class="section-header scroll-reveal">
+    <span class="section-number">04</span>
+    <h2 class="section-title">CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-grid scroll-reveal">
+
+    <!-- Colonne gauche : titre + coordonnées -->
+    <div>
+      <div class="contact-text">
+        <h3>Travaillons<br><em>ensemble.</em></h3>
+        <p>Un projet en tête ? Je suis disponible pour des collaborations en post-production TV, documentaire, fiction ou corporate.</p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:lottmannmaxime@gmail.com" class="contact-link">
+          <div><div class="contact-link-label">Email</div><div class="contact-link-value">lottmannmaxime@gmail.com</div></div>
+          <span style="color:var(--gold);font-size:20px;">→</span>
+        </a>
+        <a href="tel:0629610245" class="contact-link">
+          <div><div class="contact-link-label">Téléphone</div><div class="contact-link-value">06 29 61 02 45</div></div>
+          <span style="color:var(--gold);font-size:20px;">→</span>
+        </a>
+        <a href="https://instagram.com/lottmaxou" target="_blank" class="contact-link">
+          <div><div class="contact-link-label">Instagram</div><div class="contact-link-value">@lottmaxou</div></div>
+          <span style="color:var(--gold);font-size:20px;">→</span>
+        </a>
+        <a href="https://www.linkedin.com/in/maxime-lottmann" target="_blank" class="contact-link">
+          <div><div class="contact-link-label">LinkedIn</div><div class="contact-link-value">maxime-lottmann</div></div>
+          <span style="color:var(--gold);font-size:20px;">→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Colonne droite : disponibilité + localisation + contrat (épuré) -->
+    <div class="contact-right">
+
+      <!-- Disponibilité -->
+      <div class="contact-avail">
+        <div class="contact-avail-title">
+          <span class="contact-avail-dot"></span>Disponible pour de nouvelles missions
+        </div>
+        <p class="contact-avail-text">
+          Ouvert aux opportunités en post-production — <em>freelance, CDD, CDI ou collaboration ponctuelle</em>. N'hésitez pas à me contacter pour échanger sur votre projet.
+        </p>
+      </div>
+
+      <!-- Localisation + Contrats : 2 lignes sobres, pas de grille creuse -->
+      <div class="contact-spec-row">
+        <div class="contact-spec">
+          <span class="contact-spec-label">Localisation</span>
+          <span class="contact-spec-value">Paris & Île-de-France</span>
+        </div>
+        <div class="contact-spec">
+          <span class="contact-spec-label">Régimes acceptés</span>
+          <span class="contact-spec-value">Intermittent · Freelance · CDD · CDI</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy">© 2026 Maxime Lottmann — Tous droits réservés</span>
+  <div class="footer-social">
+    <a href="https://www.linkedin.com/in/maxime-lottmann" target="_blank">LinkedIn</a>
+    <a href="https://instagram.com/lottmaxou" target="_blank">Instagram</a>
+  </div>
+</footer>
+
+<script>
+  /* --- Cursor --- */
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=-100,my=-100,rx=-100,ry=-100;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function animCursor(){
+    cursor.style.left=mx+'px';cursor.style.top=my+'px';
+    rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+    ring.style.left=rx+'px';ring.style.top=ry+'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+  document.querySelectorAll('a,button,.project-card,.skill-cat-header,.play-circle,.ext-circle,.hero-role').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.classList.add('hover');ring.classList.add('hover');});
+    el.addEventListener('mouseleave',()=>{cursor.classList.remove('hover');ring.classList.remove('hover');});
+  });
+
+  /* --- Modal --- */
+  const modal = document.getElementById('videoModal');
+  const videoBox = document.getElementById('modalVideoBox');
+  function openModal(src, title, subtitle){
+    videoBox.innerHTML = '';
+    let el;
+    if(src.startsWith('yt:')){
+      el = document.createElement('iframe');
+      el.src = `https://www.youtube.com/embed/${src.slice(3)}?autoplay=1`;
+      el.allow = 'autoplay; fullscreen; picture-in-picture';
+      el.allowFullscreen = true;
+    } else if(src.startsWith('dm:')){
+      el = document.createElement('iframe');
+      el.src = `https://www.dailymotion.com/embed/video/${src.slice(3)}?autoplay=1`;
+      el.allow = 'autoplay; fullscreen';
+      el.allowFullscreen = true;
+    } else if(src.startsWith('mp4:')){
+      el = document.createElement('video');
+      el.src = src.slice(4);
+      el.controls = true;
+      el.autoplay = true;
+      el.style.cssText = 'width:100%;height:100%;background:#000;';
+    }
+    if(el) videoBox.appendChild(el);
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalSubtitle').textContent = subtitle;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    videoBox.innerHTML = '';
+    document.body.style.overflow = '';
+  }
+  function closeModalOnBg(e){ if(e.target===modal) closeModal(); }
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+  /* --- Filtre projets --- */
+  function filterProjects(cat,btn){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#projectsGrid .project-card').forEach(card=>{
+      card.classList.toggle('hidden', cat!=='all' && card.dataset.cat!==cat);
+    });
+  }
+
+  /* --- Skills accordéon --- */
+  function toggleSkillCat(header){
+    const body = header.nextElementSibling;
+    const isOpen = header.classList.contains('open');
+    document.querySelectorAll('.skill-cat-header').forEach(h=>{
+      h.classList.remove('open');
+      h.nextElementSibling.classList.remove('open');
+    });
+    if(!isOpen){ header.classList.add('open'); body.classList.add('open'); }
+  }
+
+  /* --- Scroll reveal --- */
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  },{threshold:.07,rootMargin:'0px 0px -30px 0px'});
+  document.querySelectorAll('.scroll-reveal').forEach(el=>observer.observe(el));
+
+  /* --- Nav scroll --- */
+  window.addEventListener('scroll',()=>{
+    document.getElementById('mainNav').style.background =
+      window.scrollY > 60 ? 'rgba(13,12,10,0.97)' : 'linear-gradient(to bottom,rgba(13,12,10,0.95) 0%,transparent 100%)';
+  });
+</script>
+</body>
+</html>
